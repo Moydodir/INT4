@@ -1,0 +1,11 @@
+[DEFAULT]
+bantime  = {{ fail2ban__bantime }}
+findtime  = {{ fail2ban__findtime }}
+maxretry = {{ fail2ban__maxretry }}
+allowipv6 = true
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+action = iptables-multiport[name=sshd, port=ssh, protocol=tcp]
+logpath = /var/log/sshd/sshd.log

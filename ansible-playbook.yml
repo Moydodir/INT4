@@ -1,0 +1,106 @@
+- hosts: all
+  become: yes
+
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: "dependencies install"
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - wget
+        - gnupg
+        - lsb-release
+        - python3-pip
+
+    - name: "Add PostgreSQL GPG key"
+      apt_key:
+        url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+        state: present
+
+    - name: "Add PostgreSQL repository"
+      apt_repository:
+        repo: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_lsb.codename }}-pgdg main"
+        state: present
+      become: yes
+
+    - name: "Update APT package index"
+      apt:
+        update_cache: yes
+
+    - name: "Install PostgreSQL packages"
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - postgresql-16
+        - postgresql-client-16
+        - postgresql-contrib-16
+
+    - name: "Install Python packages"
+      ansible.builtin.apt:
+        name: python3-psycopg2
+        state: present
+
+  tasks:
+    - name: "Initialize check"
+      ansible.builtin.stat:
+        path: "/etc/postgresql/16/main/pg_hba.conf"
+      register: postgres_data
+
+    - name: "Initialize PostgreSQL"
+      ansible.builtin.command:
+        cmd: pg_ctlcluster 16 main start
+        creates: /var/lib/postgresql/16/main
+
+    - name: "Start and enable services"
+      service: "name={{ item }} state=started enabled=yes"
+      with_items:
+        - postgresql
+
+    - name: "Create app database"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+    - name: "Create user"
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+
+    - name: "Grant db postgresql access to app db"
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: yes
+      become_user: postgres
+
+    - name: "Allow md5 connection for the db user"
+      postgresql_pg_hba:
+        dest: "/etc/postgresql/16/main/pg_hba.conf"
+        contype: host
+        databases: all
+        method: md5
+        users: "{{ db_user }}"
+        create: true
+      become: yes
+      become_user: postgres
+      notify: restart postgres
+
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
+
+  roles:
+    - ufw
+    - fail2ban
