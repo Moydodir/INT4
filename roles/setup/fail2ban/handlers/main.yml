@@ -1,8 +1,0 @@
-
----
-# handlers file for roles/setup/fail2ban
-
-- name: Restart_service
-  ansible.builtin.systemd:
-    name: fail2ban
-    state: restarted

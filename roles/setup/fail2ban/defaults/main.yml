@@ -1,5 +1,0 @@
----
-# defaults file for roles/setup/fail2ban
-fail2ban__bantime: 600  # время бана
-fail2ban__findtime: 600 # частота бана
-fail2ban__maxretry: 5   # число неудачных попыток
