@@ -1,2 +1,0 @@
-[postgresql]
-192.168.1.8 ansible_user=ansible ansible_ssh_pass=1 ansible_become_pass=1
