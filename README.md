@@ -7,9 +7,11 @@ The configurations are structured for use with monitoring tools to ensure reliab
 
 The project includes the following files:
 
+<pre>
 prometheus
 ├── blackbox.yml
 └── prometheus.yml
+</pre>
 
 
 ### Files
