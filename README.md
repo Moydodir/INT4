@@ -48,6 +48,22 @@ ansible
 3. **Run the Playbook**:
    ansible-playbook -i hosts ansible-playbook.yml
 
+## PostgreSQL 16 Configuration
+#### Variables
+
+- **db_user**: The username for the PostgreSQL database (default: `db_user`).
+- **db_password**: The password for the database user (default: `eve@123`).
+- **db_name**: The name of the PostgreSQL database (default: `postgresql`).
+
+#### Playbook Overview
+
+1. **Install PostgreSQL**: Installs PostgreSQL server, client, and contrib packages.
+2. **Initialize PostgreSQL**: Starts the PostgreSQL cluster if not already initialized.
+3. **Create Database and User**: Sets up the specified database and user with granted privileges.
+4. **Configure Authentication**: Updates `pg_hba.conf` to allow MD5 authentication for the new user.
+
+By using this role, you can ensure that PostgreSQL 16 is correctly installed and configured, allowing for secure and efficient database management
+
 ## Roles
 ### Fail2Ban: Protects the server from brute-force attacks by banning IPs based on configured rules.
 **Default Variables**
