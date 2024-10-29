@@ -50,5 +50,6 @@ ansible
 
 ## Roles
 **Fail2Ban**: Protects the server from brute-force attacks by banning IPs based on configured rules.
+
 **UFW**: Simplifies firewall management for the server, allowing or denying incoming connections.
 
