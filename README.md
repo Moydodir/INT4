@@ -35,5 +35,6 @@ docker
 3. **follow the path**:
    ```bash
    http://127.0.0.1:5000/healthz
-> **Warning:** the server will only respond to the request /healthz
+## ⚠️ Warning
+**the server will only respond to the request /healthz**
 
